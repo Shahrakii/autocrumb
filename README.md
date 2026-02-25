@@ -1,5 +1,3 @@
-  Autocrumb - Automatic Translated Breadcrumbs  body { font-family: system-ui, -apple-system, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px 20px; line-height: 1.6; } h1, h2 { color: #1a1a1a; } pre, code { background: #f8f9fa; padding: 2px 6px; border-radius: 4px; } pre { padding: 16px; overflow-x: auto; } .badge-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 20px 0; } .example { background: #f0f4ff; padding: 20px; border-radius: 8px; margin: 24px 0; } .rtl-example { direction: rtl; text-align: right; }
-
 Autocrumb
 =========
 
@@ -83,5 +81,6 @@ Features
 *   RTL support
 *   Bootstrap classes
 *   Minimal setup
+
 
 MIT License • Made with ❤️ for Laravel
