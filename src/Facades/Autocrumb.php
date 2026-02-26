@@ -1,6 +1,6 @@
 <?php
 
-namespace shahrakii\Autocrumb\Facades;
+namespace Shahrakii\Autocrumb\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

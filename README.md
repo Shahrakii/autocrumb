@@ -4,7 +4,7 @@ Autocrumb
 Automatic translated breadcrumbs from URL segments  
 Zero hassle — perfect for Persian, Arabic & multilingual admin panels
 
-![Version](https://img.shields.io/packagist/v/shahrakii/autocrumb?style=flat-square) ![Downloads](https://img.shields.io/packagist/dt/shahrakii/autocrumb?style=flat-square) ![MIT](https://img.shields.io/github/license/shahrakii/autocrumb?style=flat-square)
+![Version](https://img.shields.io/packagist/v/yourname/autocrumb?style=flat-square) ![Downloads](https://img.shields.io/packagist/dt/yourname/autocrumb?style=flat-square) ![MIT](https://img.shields.io/github/license/yourname/autocrumb?style=flat-square)
 
 What it does
 ------------
@@ -24,7 +24,7 @@ For URL `/admin/dashboard/products/create` you get:
 Quick Start
 -----------
 
-    composer require shahrakii/autocrumb
+    composer require yourname/autocrumb
 
 Optional — publish translations:
 
@@ -84,4 +84,3 @@ Features
 
 
 MIT License • Made with ❤️ for Laravel
-

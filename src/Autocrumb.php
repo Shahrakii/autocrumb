@@ -1,6 +1,6 @@
 <?php
 
-namespace shahrakii\Autocrumb;
+namespace Shahrakii\Autocrumb;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
@@ -15,24 +15,17 @@ class Autocrumb
 
         $config = Config::get('autocrumb', []);
 
-        $segments = array_filter(explode('/', trim($path, '/')));
-
-        if (empty($segments) && ! $config['show_home']) {
-            return '';
-        }
+        $segments = array_filter(explode('/', trim($path, '/')), fn($s) => $s !== '');
 
         $items = [];
 
-        // Home
-        if ($config['show_home']) {
-            $homeKey = 'home';
-            $homeLabel = __($homeKey, [], $locale) !== $homeKey
-                ? __($homeKey, [], $locale)
-                : 'Home';
+        if ($config['show_home'] ?? true) {
+            $homeLabel = __($config['translation_prefix'] . 'home', [], $locale) 
+                         ?? ($config['home_label'] ?? 'Home');
 
             $items[] = [
-                'label' => $homeLabel,
-                'url'   => $config['home_url'],
+                'label'  => $homeLabel,
+                'url'    => $config['home_url'] ?? '/',
                 'active' => false,
             ];
         }
@@ -40,19 +33,17 @@ class Autocrumb
         $currentPath = '';
 
         foreach ($segments as $segment) {
-            if (in_array($segment, $config['ignore_segments'])) {
+            if (in_array($segment, $config['ignore_segments'] ?? ['index', 'show'])) {
                 continue;
             }
 
             $currentPath .= '/' . $segment;
 
-            $translated = __($segment, [], $locale);
+            $key = ($config['translation_prefix'] ?? '') . $segment;
+            $translated = __($key, [], $locale);
 
-            // Fallback to human-readable if no translation
-            if ($translated === $segment && $config['title_case_fallback']) {
-                $translated = Str::of($segment)
-                    ->replace(['-', '_'], ' ')
-                    ->title();
+            if ($translated === $key && ($config['title_case_fallback'] ?? true)) {
+                $translated = Str::of($segment)->replace(['-', '_'], ' ')->title();
             }
 
             $items[] = [
@@ -62,14 +53,13 @@ class Autocrumb
             ];
         }
 
-        // Mark last item active
-        if (! empty($items)) {
+        if (!empty($items)) {
             $items[array_key_last($items)]['active'] = true;
         }
 
         return view('autocrumb::breadcrumbs', [
-            'items' => $items,
-            'separator' => $config['separator'] ?? ' / ',
+            'breadcrumbs' => $items,
+            'separator'   => $config['separator'] ?? ' / ',
         ])->render();
     }
 }

@@ -2,9 +2,8 @@
     "home": "Home",
     "admin": "Admin",
     "dashboard": "Dashboard",
+    "product": "Product",
     "products": "Products",
     "create": "Create",
-    "edit": "Edit",
-    "users": "Users",
-    "settings": "Settings"
+    "edit": "Edit"
 }
