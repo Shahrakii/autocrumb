@@ -1,86 +1,273 @@
-Autocrumb
-=========
+# 🧭 Autocrumb
 
-Automatic translated breadcrumbs from URL segments  
-Zero hassle — perfect for Persian, Arabic & multilingual admin panels
+> Automatic, translated breadcrumbs for Laravel — zero config, zero effort.
 
-![Version](https://img.shields.io/packagist/v/yourname/autocrumb?style=flat-square) ![Downloads](https://img.shields.io/packagist/dt/yourname/autocrumb?style=flat-square) ![MIT](https://img.shields.io/github/license/yourname/autocrumb?style=flat-square)
+[![Laravel](https://img.shields.io/badge/Laravel-10%20%7C%2011%20%7C%2012-red?style=flat-square&logo=laravel)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.1%2B-blue?style=flat-square&logo=php)](https://php.net)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
-What it does
-------------
+Autocrumb reads your current URL, splits it into segments, translates each one using built-in Persian and English dictionaries, and renders a beautiful RTL-ready breadcrumb — automatically.
 
-Just drop one line in your Blade file:
+---
 
-    <x-breadcrumbs />
+## ✨ Features
 
-For URL `/admin/dashboard/products/create` you get:
+- 🔍 **Auto-detection** — reads `request()->segments()` with no manual route registration
+- 🌐 **Persian & English** — built-in `fa` / `en` translation dictionaries
+- 🎨 **Beautiful default view** — dark glassmorphism style, RTL-ready, Vazirmatn font
+- ⚙️ **Fully configurable** — separator, home label, ignored segments, CSS classes
+- 🧩 **Facade + direct call** — use however you prefer
+- 📦 **Laravel auto-discovery** — no manual provider registration needed
+- 🪶 **Zero dependencies** — pure PHP + Laravel, nothing else
 
-[خانه](/) /
-[پنل](/admin) /
-[داشبورد](/admin/dashboard) /
-[محصولات](/admin/dashboard/products) /
-ایجاد
+---
 
-Quick Start
------------
+## 📦 Installation
 
-    composer require yourname/autocrumb
+### From a local path (development)
 
-Optional — publish translations:
+Add to your Laravel project's `composer.json`:
 
-    php artisan vendor:publish --tag=autocrumb-lang
-
-Then add/edit `lang/fa.json`:
-
+```json
+"repositories": [
     {
-      "home": "خانه",
-      "admin": "پنل",
-      "dashboard": "داشبورد",
-      "products": "محصولات",
-      "create": "ایجاد",
-      "edit": "ویرایش"
+        "type": "path",
+        "url": "./packages/autocrumb"
     }
+],
+"require": {
+    "shahrakii/autocrumb": "*@dev"
+}
+```
 
-Usage
------
+Then run:
 
-    <!-- Basic -->
-    <x-breadcrumbs />
-    
-    <!-- Styled -->
-    <x-breadcrumbs class="p-3 bg-light rounded" />
+```bash
+composer update
+php artisan optimize:clear
+```
 
-Or programmatically (rare):
+### From Packagist (once published)
 
-    {!! Autocrumb::generate() !!}
+```bash
+composer require shahrakii/autocrumb
+```
 
-How translations work
----------------------
+---
 
-*   Looks for exact segment in JSON (e.g. `"products"`)
-*   No match → converts to title case (`create-product` → `Create Product`)
-*   Home is `"home"` key or fallback
+## 🚀 Quick Start
 
-Optional config
----------------
+Drop this anywhere in your Blade file:
 
-    php artisan vendor:publish --tag=autocrumb-config
+```blade
+{!! \Shahrakii\Autocrumb\Facades\Autocrumb::generate() !!}
+```
 
-    return [
-        'separator'       => ' » ',
-        'show_home'       => true,
-        'last_item_link'  => false,
-        'ignore_segments' => ['index', 'show'],
-    ];
+Force Persian:
 
-Features
---------
+```blade
+{!! \Shahrakii\Autocrumb\Facades\Autocrumb::generate(null, 'fa') !!}
+```
 
-*   Automatic from current URL
-*   JSON translations (translator friendly)
-*   RTL support
-*   Bootstrap classes
-*   Minimal setup
+Force English:
 
+```blade
+{!! \Shahrakii\Autocrumb\Facades\Autocrumb::generate(null, 'en') !!}
+```
 
-MIT License • Made with ❤️ for Laravel
+---
+
+## 🎯 Output Example
+
+For URL `/admin/product/create` with locale `fa`:
+
+```
+خانه  ›  مدیریت  ›  محصولات  ›  ایجاد جدید
+```
+
+For locale `en`:
+
+```
+Home  ›  Admin  ›  Products  ›  Create New
+```
+
+---
+
+## ⚙️ Configuration
+
+Publish the config file:
+
+```bash
+php artisan vendor:publish --tag=autocrumb-config
+```
+
+This creates `config/autocrumb.php`:
+
+```php
+return [
+
+    // Default locale: 'en' or 'fa' — null = uses app()->getLocale()
+    'locale' => null,
+
+    // Show a "Home" item as the first crumb
+    'show_home' => true,
+
+    // URL for the home crumb
+    'home_url' => '/',
+
+    // Separator between crumbs (HTML allowed)
+    'separator' => '›',
+
+    // Map URL segments to custom labels (takes priority over lang files)
+    'segment_labels' => [
+        // 'admin' => 'Control Panel',
+        // 'shop'  => 'فروشگاه',
+    ],
+
+    // Segments to skip entirely
+    'ignored_segments' => [],
+
+    // Auto-capitalize labels when no translation found
+    'auto_capitalize' => true,
+
+    // Replace hyphens/underscores with spaces
+    'replace_hyphens' => true,
+
+    // Whether the last crumb should be a link
+    'last_item_link' => false,
+
+    // CSS classes
+    'wrapper_class' => 'breadcrumb',
+    'item_class'    => 'breadcrumb-item',
+    'active_class'  => 'active',
+
+];
+```
+
+---
+
+## 🎨 Custom View
+
+Publish the view to customize it:
+
+```bash
+php artisan vendor:publish --tag=autocrumb-views
+```
+
+This copies the view to `resources/views/vendor/autocrumb/breadcrumbs.blade.php`.
+
+Or pass your own view name:
+
+```blade
+{!! \Shahrakii\Autocrumb\Facades\Autocrumb::generate('my-custom.breadcrumbs', 'fa') !!}
+```
+
+Your custom view receives these variables:
+
+| Variable | Type | Description |
+|---|---|---|
+| `$items` | `array` | Array of breadcrumb items |
+| `$separator` | `string` | Separator string from config |
+| `$wrapperClass` | `string` | CSS class for `<nav>` |
+| `$itemClass` | `string` | CSS class for each `<li>` |
+| `$activeClass` | `string` | CSS class for active `<li>` |
+
+Each item in `$items`:
+
+```php
+[
+    'label'  => 'Products',   // translated label
+    'url'    => '/admin/product',
+    'active' => false,        // true for the last item
+]
+```
+
+---
+
+## 🔧 Raw Data
+
+If you want to build your own HTML from scratch:
+
+```blade
+@php
+    $crumbs = \Shahrakii\Autocrumb\Facades\Autocrumb::getBreadcrumbData('fa');
+@endphp
+
+@foreach($crumbs as $crumb)
+    <span>{{ $crumb['label'] }}</span>
+@endforeach
+```
+
+---
+
+## 🌍 Adding Translations
+
+Publish the lang files:
+
+```bash
+php artisan vendor:publish --tag=autocrumb-lang
+```
+
+This copies them to `resources/lang/vendor/autocrumb/`. Add your own keys to `fa.json` or `en.json`:
+
+```json
+{
+    "shop":     "فروشگاه",
+    "checkout": "تسویه حساب",
+    "wishlist": "علاقه‌مندی‌ها"
+}
+```
+
+Or map segments directly in config without touching lang files:
+
+```php
+'segment_labels' => [
+    'shop'     => 'فروشگاه',
+    'checkout' => 'تسویه حساب',
+],
+```
+
+---
+
+## 📁 Package Structure
+
+```
+autocrumb/
+├── composer.json
+├── config/
+│   └── autocrumb.php
+├── resources/
+│   ├── lang/
+│   │   ├── en.json
+│   │   └── fa.json
+│   └── views/
+│       └── breadcrumbs.blade.php
+└── src/
+    ├── Facades/
+    │   └── Autocrumb.php
+    ├── Autocrumb.php
+    └── AutocrumbServiceProvider.php
+```
+
+---
+
+## 📋 Requirements
+
+| Requirement | Version |
+|---|---|
+| PHP | 8.1+ |
+| Laravel | 10 / 11 / 12 |
+
+---
+
+## 📄 License
+
+MIT — free to use, modify, and distribute.
+
+---
+
+## 👤 Author
+
+Made by **Shahrakii**
+
+> Built to scratch an itch — automatic, translated breadcrumbs with zero boilerplate.
